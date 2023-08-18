@@ -8,19 +8,13 @@ public partial class Player : CharacterBody2D
 	[Export]
 	public PackedScene Bullet;
 
-	private Vector2 syncPos = new Vector2(0,0);
-	private float syncRotation = 0;
-
 	// Get the gravity from the project settings to be synced with RigidBody nodes.
 	public float gravity = ProjectSettings.GetSetting("physics/2d/default_gravity").AsSingle();
 
-	public override void _Ready(){
-		GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").SetMultiplayerAuthority(int.Parse(Name));
-	}
+
 	public override void _PhysicsProcess(double delta)
 	{
-		if(GetNode<MultiplayerSynchronizer>("MultiplayerSynchronizer").GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
-		{
+		
 			Vector2 velocity = Velocity;
 
 			// Add the gravity.
@@ -34,7 +28,10 @@ public partial class Player : CharacterBody2D
 			GetNode<Node2D>("GunRotation").LookAt(GetViewport().GetMousePosition());
 
 			if(Input.IsActionJustPressed("fire")){
-				Rpc("fire");
+				Node2D b = Bullet.Instantiate<Node2D>();
+				b.RotationDegrees = GetNode<Node2D>("GunRotation").RotationDegrees;
+				b.GlobalPosition = GetNode<Node2D>("GunRotation/BulletSpawn").GlobalPosition;
+				GetTree().Root.AddChild(b);
 			}
 
 			// Get the input direction and handle the movement/deceleration.
@@ -51,21 +48,9 @@ public partial class Player : CharacterBody2D
 
 			Velocity = velocity;
 			MoveAndSlide();
-			syncPos = GlobalPosition;
-			syncRotation = GetNode<Node2D>("GunRotation").RotationDegrees;
-		}else{
-			GlobalPosition = GlobalPosition.Lerp(syncPos, .1f);
-			GetNode<Node2D>("GunRotation").RotationDegrees = Mathf.Lerp(GetNode<Node2D>("GunRotation").RotationDegrees, syncRotation, .1f);
-		}
+		
 	}
 
-	[Rpc(MultiplayerApi.RpcMode.AnyPeer,CallLocal = true)]
-	private void fire(){
-		Node2D b = Bullet.Instantiate<Node2D>();
-		b.RotationDegrees = GetNode<Node2D>("GunRotation").RotationDegrees;
-		b.GlobalPosition = GetNode<Node2D>("GunRotation/BulletSpawn").GlobalPosition;
-		GetTree().Root.AddChild(b);
-	}
 
 	public void SetUpPlayer(string name){
 		GetNode<Label>("Label").Text = name;

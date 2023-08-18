@@ -1,7 +1,6 @@
-[gd_scene load_steps=11 format=3 uid="uid://cqmcx0hg4y21v"]
+[gd_scene load_steps=10 format=3 uid="uid://cqmcx0hg4y21v"]
 
 [ext_resource type="Texture2D" uid="uid://chlnt56mtnfqo" path="res://parallax_background_layer_6.png" id="1_er8t8"]
-[ext_resource type="Script" path="res://SceneManager.cs" id="1_p5a22"]
 [ext_resource type="Texture2D" uid="uid://6r0yoxgn80ir" path="res://main_tileset.png" id="1_uru3g"]
 [ext_resource type="Texture2D" uid="uid://cwxl33xxbtg3r" path="res://building_01.png" id="2_4jefx"]
 [ext_resource type="PackedScene" uid="uid://hpbx14ma8p0v" path="res://player.tscn" id="2_yb0ig"]
@@ -336,8 +335,6 @@ sources/0 = SubResource("TileSetAtlasSource_bfysl")
 size = Vector2(880, 106)
 
 [node name="Node2D" type="Node2D"]
-script = ExtResource("1_p5a22")
-playerScene = ExtResource("2_yb0ig")
 
 [node name="ParallaxBackgroundLayer6" type="Sprite2D" parent="."]
 position = Vector2(576.778, 323)
@@ -373,10 +370,5 @@ layer_0/tile_data = PackedInt32Array(2162697, 327680, 9, 2162698, 393216, 9, 216
 position = Vector2(583, 582)
 shape = SubResource("RectangleShape2D_fjpx0")
 
-[node name="PlayerSpawnPoints" type="Node2D" parent="."]
-
-[node name="0" type="Node2D" parent="PlayerSpawnPoints" groups=["PlayerSpawnPoints"]]
-position = Vector2(207, 472)
-
-[node name="1" type="Node2D" parent="PlayerSpawnPoints" groups=["PlayerSpawnPoints"]]
-position = Vector2(919, 477)
+[node name="Player" parent="." instance=ExtResource("2_yb0ig")]
+position = Vector2(207, 500)
