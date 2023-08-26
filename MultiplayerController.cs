@@ -23,6 +23,8 @@ public partial class MultiplayerController : Control
 		if(OS.GetCmdlineArgs().Contains("--server")){
 			hostGame();
 		}
+
+		GetNode<ServerBrowser>("ServerBrowser").JoinGame += joinGame;
 	}
 
 	/// <summary>
@@ -89,6 +91,7 @@ public partial class MultiplayerController : Control
 
 		Multiplayer.MultiplayerPeer = peer;
 		GD.Print("Waiting For Players!");
+		GetNode<ServerBrowser>("ServerBrowser").SetUpBroadcast(GetNode<LineEdit>("LineEdit").Text + "'s Server");
 	}
 
 	public void _on_host_button_down(){
@@ -96,8 +99,12 @@ public partial class MultiplayerController : Control
 		sendPlayerInformation(GetNode<LineEdit>("LineEdit").Text, 1);
 	}
 	public void _on_join_button_down(){
+		joinGame(address);
+	}
+
+	private void joinGame(string ip){
 		peer = new ENetMultiplayerPeer();
-		peer.CreateClient(address, port);
+		peer.CreateClient(ip, port);
 
 		peer.Host.Compress(ENetConnection.CompressionMode.RangeCoder);
 		Multiplayer.MultiplayerPeer = peer;
@@ -109,7 +116,7 @@ public partial class MultiplayerController : Control
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer, CallLocal = true, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	private void startGame(){
-
+		GetNode<ServerBrowser>("ServerBrowser").CleanUp();
 		var scene = ResourceLoader.Load<PackedScene>("res://TestScene.tscn").Instantiate<Node2D>();
 		GetTree().Root.AddChild(scene);
 		this.Hide();

@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://7g6oqy0hi451"]
+[gd_scene load_steps=4 format=3 uid="uid://n2r7hedm4r0q"]
 
 [ext_resource type="Script" path="res://MultiplayerController.cs" id="1_6vlg6"]
+[ext_resource type="Script" path="res://ServerBrowser.cs" id="2_ld2pp"]
+[ext_resource type="PackedScene" uid="uid://cyi4pqrmi64tt" path="res://ServerInfo.tscn" id="3_le2yx"]
 
 [node name="Multiplayer Controller" type="Control"]
 layout_mode = 3
@@ -51,6 +53,67 @@ offset_right = 103.0
 offset_bottom = 66.0
 text = "Name"
 
+[node name="ServerBrowser" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 1.0
+offset_right = 41.0
+offset_bottom = 40.0
+script = ExtResource("2_ld2pp")
+ServerInfo = ExtResource("3_le2yx")
+
+[node name="BroadcastTimer" type="Timer" parent="ServerBrowser"]
+
+[node name="Panel" type="Panel" parent="ServerBrowser"]
+layout_mode = 0
+offset_left = 54.0
+offset_top = 179.0
+offset_right = 797.0
+offset_bottom = 568.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="ServerBrowser/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 46.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="ServerBrowser/Panel"]
+layout_mode = 2
+offset_top = 7.0
+offset_right = 743.0
+offset_bottom = 38.0
+
+[node name="Name" type="Label" parent="ServerBrowser/Panel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Name"
+
+[node name="IP" type="Label" parent="ServerBrowser/Panel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "IP"
+
+[node name="PlayerCount" type="Label" parent="ServerBrowser/Panel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "PlayerCount"
+
+[node name="PlayerCount2" type="Label" parent="ServerBrowser/Panel/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Join"
+
+[node name="Label" type="Label" parent="ServerBrowser"]
+layout_mode = 0
+offset_left = 904.0
+offset_top = 11.0
+offset_right = 944.0
+offset_bottom = 34.0
+text = "Bound To Listen Port: true"
+
 [connection signal="button_down" from="Host" to="." method="_on_host_button_down"]
 [connection signal="button_down" from="Join" to="." method="_on_join_button_down"]
 [connection signal="button_down" from="StartGame" to="." method="_on_start_game_button_down"]
+[connection signal="timeout" from="ServerBrowser/BroadcastTimer" to="ServerBrowser" method="_on_broadcast_timer_timeout"]
